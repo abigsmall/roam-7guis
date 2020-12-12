@@ -1,0 +1,35 @@
+{
+  "name": "abigsmall-roam-7guis",
+  "version": "0.0.1",
+  "description": "Justin Hong’s 7GUIs for Roam Research",
+  "scripts": {
+    "dev": "shadow-cljs watch app",
+    "release": "shadow-cljs release app",
+    "clean": "rm -rf target && rm -rf public/js",
+    "clean-win": "rmdir /s /q public/js & rmdir /s /q target"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abigsmall/roam-7guis.git"
+  },
+  "keywords": [
+    "7GUIs",
+    "clojurescript",
+    "roam",
+    "reagent"
+  ],
+  "author": "Justin Hong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abigsmall/roam-7guis/issues"
+  },
+  "homepage": "https://github.com/abigsmall/roam-7guis#readme",
+  "dependencies": {
+    "create-react-class": "^15.7.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.3"
+  },
+  "devDependencies": {
+    "shadow-cljs": "2.8.52"
+  }
+}
