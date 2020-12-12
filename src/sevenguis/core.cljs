@@ -4,7 +4,7 @@
 (defn app
   []
   [:div
-   "Whaddup"])
+   [:p "Whaddup!"]])
 
 (defn ^:export main
   []
