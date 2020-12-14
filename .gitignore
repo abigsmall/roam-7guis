@@ -5,3 +5,5 @@
 .nrepl-port
 package-lock.json
 .DS_Store
+.firebase
+.firebaserc

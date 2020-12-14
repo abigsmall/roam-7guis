@@ -1,10 +1,11 @@
 (ns sevenguis.core
-  (:require [reagent.core :as r]))
+  (:require [reagent.core :as r]
+            [sevenguis.components.counter :refer [counter]]))
 
 (defn app
   []
   [:div
-   [:p "Whaddup!"]])
+   [counter]])
 
 (defn ^:export main
   []
