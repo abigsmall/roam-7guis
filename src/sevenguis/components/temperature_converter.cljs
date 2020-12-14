@@ -1,33 +1,36 @@
 (ns sevenguis.components.temperature-converter
   (:require [reagent.core :as r]))
 
-(defn convert-to-f
-  [{source-unit :unit source-value :value}]
-  (case source-unit
-    "C" (+ (* source-value (/ 9 5)) 32)
-    "F" source-value))
+(defn c->f
+  [c]
+  (+ (* c (/ 9 5)) 32))
 
-(defn convert-to-c
-  [{source-unit :unit source-value :value}]
-  (case source-unit
-    "F" (* (- source-value 32) (/ 5 9))
-    "C" source-value))
+(defn f->c
+  [f]
+  (* (- f 32) (/ 5 9)))
 
 (defn temperature-converter
   []
-  (let [temperature (r/atom {:unit "C" :value nil})]
+  (let [c (r/atom nil)
+        f (r/atom nil)]
     (fn
       []
       [:div
        [:label
         [:input
-         {:value (when (:value @temperature) (convert-to-f @temperature))
-          :on-change #(swap! temperature assoc :value (convert-to-c {:unit "F" :value (.. % -target -value)}))}]
+         {:value @f
+          :on-change (fn [e]
+                       (let [input-val (.. e -target -value)]
+                         (reset! f input-val)
+                         (reset! c (f->c input-val))))}]
         "Fahrenheit"]
        [:label
         [:input
-         {:value (when (:value @temperature) (:value @temperature))
-          :on-change #(swap! temperature assoc :value (.. % -target -value))}]
+         {:value @c
+          :on-change (fn [e]
+                       (let [input-val (.. e -target -value)]
+                         (reset! c input-val)
+                         (reset! f (c->f input-val))))}]
         "Celsius"]])))
 
 ;; well, how do we want to do this?
@@ -36,3 +39,10 @@
 ;; we can make K be the canonical value
 ;; ok let’s just make C be the canonical
 ;; or F
+
+;; okay, some combination of on-blur and a toggle for when we’re actively editing and then also checking when the value has changed
+;; okay we may not need the change in value part, or, i mean we could use the on-change callback as a place for this.
+;; on-blur will help with setting the toggle back.
+;; we should set the toggle on in the on-change
+
+;; wait, i don’t even need the active, inactive check
