@@ -16,7 +16,9 @@
   (let [parse-floated (js/parseFloat input)
         is-nan (js/isNaN parse-floated)]
     {:input input
-     :valid is-nan}))
+     :valid (if (= input "")
+              true
+              (not is-nan))}))
 
 (defn input-validator
   [{:keys [label value change-handler]}]
@@ -29,9 +31,6 @@
          :value @value
          :on-change (fn [e]
                       (let [{valid? :valid input :input} (validate-input (.. e -target -value))]
-                        (.log js/console "valid?:" valid?)
-                        (.log js/console "input:" input)
-                        (.log js/console "value-from-inside-input-validator:" value)
                         (when (not= valid? @valid) (reset! valid valid?))
                         (change-handler input)))}]
 
