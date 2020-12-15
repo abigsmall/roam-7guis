@@ -26,7 +26,7 @@
       [:label
        [:input
         {:class (when (not @valid) "invalid")
-         :value value
+         :value @value
          :on-change (fn [e]
                       (let [{valid? :valid input :input} (validate-input (.. e -target -value))]
                         (.log js/console "valid?:" valid?)
@@ -45,10 +45,10 @@
       []
       [:div
        [:h2 "Temperature Converter"]
-       [:p "“value” (really @f) from temperature-converter:" @f]
+       ; [:p "“value” (really @f) from temperature-converter:" @f]
        [input-validator
         {:label "Fahrenheit1"
-         :value @f
+         :value f
          :change-handler (fn [input]
                            (reset! f input)
                            (reset! c (f->c input)))}]])))
