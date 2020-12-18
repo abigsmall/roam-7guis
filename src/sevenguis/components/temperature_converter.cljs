@@ -9,30 +9,36 @@
   [f]
   (* (- f 32) (/ 5 9)))
 
-;; we want to know when something is not a number
-;; let’s play around with numbers
-(defn validate-input
+(defn validate
   [input]
-  (let [parse-floated (js/parseFloat input)
-        is-nan (js/isNaN parse-floated)]
+  (let [number (js/Number input)
+        parsed-float (js/parseFloat input)]
+    (.log js/console "validate: input:" input)
+    (.log js/console "validate: parsed-float:" parsed-float)
+    (.log js/console "validate: (js/isNaN number):" (js/isNaN number))
+    (.log js/console "validate: (js/isNaN parsed-float):" (js/isNaN parsed-float))
+    (.log js/console "validate: (and (not (js/isNaN number)) (not (js/isNaN parsed-float))):" (and (not (js/isNaN number)) (not (js/isNaN parsed-float))))
     {:input input
-     :valid (if (= input "")
+     :valid (if (and (not (js/isNaN number)) (not (js/isNaN parsed-float))) ;; maybe i can make this a let for readability
               true
-              (not is-nan))}))
+              false)}))
 
-(defn input-validator
-  [{:keys [label value change-handler]}]
+(defn validated-input
+  []
   (let [valid (r/atom true)]
     (fn
-      []
+      [{:keys [label value change-handler]}]
       [:label
        [:input
-        {:class (when (not @valid) "invalid")
-         :value @value
+        {:class (when-not @valid "invalid")
+         :value value
          :on-change (fn [e]
-                      (let [{valid? :valid input :input} (validate-input (.. e -target -value))]
+                      (let [{valid? :valid input :input} (validate (.. e -target -value))]
+                        (.log js/console "validated-input: on-change: valid?:" valid?)
+                        (.log js/console "validated-input: on-change: input:" input)
+                        (.log js/console "validated-input: on-change: @valid:" @valid)
                         (when (not= valid? @valid) (reset! valid valid?))
-                        (change-handler input)))}]
+                        (change-handler input valid?)))}]
 
        label])))
 
@@ -44,42 +50,19 @@
       []
       [:div
        [:h2 "Temperature Converter"]
-       ; [:p "“value” (really @f) from temperature-converter:" @f]
-       [input-validator
-        {:label "Fahrenheit1"
-         :value f
-         :change-handler (fn [input]
+       [validated-input
+        {:label "Fahrenheit"
+         :value ((fn [v] (.log js/console "temperature-converter value prop to validated-input:" v) v) @f)
+         :change-handler (fn [input valid?]
                            (reset! f input)
-                           (reset! c (f->c input)))}]])))
-       ; [:label
-       ;  [:input
-       ;   {:value @f
-       ;    :on-change (fn [e]
-       ;                 (let [input-val (validate-input (.. e -target -value))]
-       ;                   (reset! f input-val)
-       ;                   (reset! c (f->c input-val))))}]
-       ;  "Fahrenheit"]
-       ; [:label
-       ;  [:input
-       ;   {:value @c
-       ;    :on-change (fn [e]
-       ;                 (let [input-val (.. e -target -value)]
-       ;                   (reset! c input-val)
-       ;                   (reset! f (c->f input-val))))}]
-       ;  "Celsius"]])))
+                           (cond
+                             (= input "") (reset! c nil)
+                             valid? (reset! c (f->c input))
+                             :else (reset! c nil)))}]
 
-;; well, how do we want to do this?
-;; we gotta do some validation
-;; let’s just dive in
-;; we can make K be the canonical value
-;; ok let’s just make C be the canonical
-;; or F
-
-;; okay, some combination of on-blur and a toggle for when we’re actively editing and then also checking when the value has changed
-;; okay we may not need the change in value part, or, i mean we could use the on-change callback as a place for this.
-;; on-blur will help with setting the toggle back.
-;; we should set the toggle on in the on-change
-
-;; wait, i don’t even need the active, inactive check
-
-;; need to do input validation
+       [validated-input
+        {:label "Celsius"
+         :value @c
+         :change-handler (fn [input]
+                           (reset! c input)
+                           (reset! f (c->f input)))}]])))
