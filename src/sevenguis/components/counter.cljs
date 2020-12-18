@@ -6,8 +6,9 @@
   (let [count (r/atom 0)]
     (fn
       []
-      [:div @count
-       [:div]
+      [:div
+       [:h2 "Counter"]
+       [:span @count]
        [:button
         {:on-click #(swap! count inc)}
         "Count 🧛‍♂️"]])))
