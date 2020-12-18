@@ -1,11 +1,11 @@
 (ns sevenguis.components.simplified-example
   (:require [reagent.core :as r]))
 
-(defn input-parent
-  [{:keys [label value change-handler]}]
+(defn input-wrapper
+  [{:keys [label change-handler]}]
   (let [valid (r/atom true)]
     (fn
-      []
+      [{:keys [value]}]
       [:label
        label
        [:input
@@ -25,7 +25,7 @@
       []
       [:div
        [:h2 "Simplified Example"]
-       [input-parent
+       [input-wrapper
         {:label "What a simple input"
          :value @parent-ratom
          :change-handler #(reset! parent-ratom %)}]])))
