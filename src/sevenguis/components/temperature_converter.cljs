@@ -12,34 +12,32 @@
 (defn validate
   [input]
   (let [number (js/Number input)
-        parsed-float (js/parseFloat input)]
+        parsed-float (js/parseFloat input)
+        valid (and (not (js/isNaN number)) (not (js/isNaN parsed-float)))]
     (.log js/console "validate: input:" input)
     (.log js/console "validate: parsed-float:" parsed-float)
     (.log js/console "validate: (js/isNaN number):" (js/isNaN number))
     (.log js/console "validate: (js/isNaN parsed-float):" (js/isNaN parsed-float))
-    (.log js/console "validate: (and (not (js/isNaN number)) (not (js/isNaN parsed-float))):" (and (not (js/isNaN number)) (not (js/isNaN parsed-float))))
+    (.log js/console "validate: valid:" valid)
     {:input input
-     :valid (if (and (not (js/isNaN number)) (not (js/isNaN parsed-float))) ;; maybe i can make this a let for readability
-              true
-              false)}))
+     :valid valid}))
 
 (defn validated-input
-  []
+  [{:keys [label change-handler]}]
   (let [valid (r/atom true)]
     (fn
-      [{:keys [label value change-handler]}]
+      [{:keys [value]}]
       [:label
        [:input
         {:class (when-not @valid "invalid")
          :value value
          :on-change (fn [e]
                       (let [{valid? :valid input :input} (validate (.. e -target -value))]
-                        (.log js/console "validated-input: on-change: valid?:" valid?)
-                        (.log js/console "validated-input: on-change: input:" input)
-                        (.log js/console "validated-input: on-change: @valid:" @valid)
+                        ; (.log js/console "validated-input: on-change: valid?:" valid?)
+                        ; (.log js/console "validated-input: on-change: input:" input)
+                        ; (.log js/console "validated-input: on-change: @valid:" @valid)
                         (when (not= valid? @valid) (reset! valid valid?))
                         (change-handler input valid?)))}]
-
        label])))
 
 (defn temperature-converter
@@ -52,7 +50,7 @@
        [:h2 "Temperature Converter"]
        [validated-input
         {:label "Fahrenheit"
-         :value ((fn [v] (.log js/console "temperature-converter value prop to validated-input:" v) v) @f)
+         :value @f
          :change-handler (fn [input valid?]
                            (reset! f input)
                            (cond
