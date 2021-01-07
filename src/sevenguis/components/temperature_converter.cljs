@@ -9,15 +9,12 @@
   [f]
   (* (- f 32) (/ 5 9)))
 
-(defn validate
+(defn valid-number?
   [input]
   (let [number (js/Number input)
         parsed-float (js/parseFloat input)
         valid (and (not (js/isNaN number)) (not (js/isNaN parsed-float)))]
-    (condp = input
-      nil true
-      "" true
-      valid)))
+    valid))
 
 (defn empty-input?
   [input]
@@ -25,6 +22,10 @@
     (nil? input) true
     (= input "") true
     :else false))
+
+(defn valid-input?
+  [input]
+  (or (valid-number? input) (empty-input? input)))
 
 (defn temperature-converter
   []
@@ -37,29 +38,30 @@
        [:label
         [:input
          {:class (cond
-                   (not (validate @f)) "invalid"
                    (empty-input? @f) nil
-                   (not (validate @c)) "decoupled")
+                   (not (valid-number? @f)) "invalid"
+                   (or (not (valid-number? @c)) (empty-input? @c)) "decoupled")
                    ; (or (not (validate @c)) (empty-input? @c)) "decoupled" ;; or c has empty input
 
           :value @f
           :on-change (fn [e]
                        (let [input (.. e -target -value)]
                          (reset! f input)
-                         (when (validate @f)
+                         (when (valid-number? input)
+                           ; if input is not nil or empty string and is valid number
                            (reset! c (f->c input)))))}]
 
         "Fahrenheit"]
        [:label
         [:input
          {:class (cond
-                   (not (validate @c)) "invalid"
                    (empty-input? @c) nil
-                   (not (validate @f)) "decoupled")
+                   (not (valid-number? @c)) "invalid"
+                   (or (not (valid-number? @f)) (empty-input? @f)) "decoupled")
           :value @c
           :on-change (fn [e]
                        (let [input (.. e -target -value)]
                          (reset! c input)
-                         (when (validate @c)
+                         (when (valid-number? input)
                            (reset! f (c->f input)))))}]
         "Celsius"]])))
