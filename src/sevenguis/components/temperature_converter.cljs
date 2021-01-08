@@ -27,7 +27,7 @@
     (fn
       []
       [:div
-       [:h2 "Temperature Converter2"]
+       [:h2 "Temperature Converter"]
        [:label
         [:input
          {:class (cond
