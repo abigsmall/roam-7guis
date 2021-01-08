@@ -39,7 +39,6 @@
                        (let [input (.. e -target -value)]
                          (reset! f input)
                          (when (valid-number? input)
-                             ; if input is not nil or empty string and is valid number
                            (reset! c (f->c input)))))}]
         "Fahrenheit"]
        [:label

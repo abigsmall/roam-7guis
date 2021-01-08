@@ -1,7 +1,9 @@
 input.invalid {
-  outline: 1px solid red;
+  background-color: red;
+  color: white;
 }
 
 input.decoupled {
-  outline: 1px solid grey;
+  background-color: grey;
+  color: white;
 }
