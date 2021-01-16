@@ -7,7 +7,6 @@
     (fn
       []
       [:div
-       [:h2 "Counter"]
        [:span @count]
        [:button
         {:on-click #(swap! count inc)}
