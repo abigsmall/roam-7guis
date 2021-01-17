@@ -17,7 +17,7 @@
   (let [c (r/atom :one-way)
         t1 (r/atom {:value "2021-01-08"})
         t2 (r/atom {:value "2021-01-08"
-                    :enabled (ratom/reaction (= :round @c))})]
+                    :enabled (ratom/reaction (= :return @c))})]
     (fn
       []
       [:div
