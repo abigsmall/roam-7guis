@@ -56,8 +56,15 @@
                         (swap! t1 assoc :value input)))}]
        [:input
         {:class (when-not (validate-date (:value @t2)) "invalid")
+         :disabled (not @(:enabled @t2))
          :value (:value @t2)
          :on-change (fn [e]
                       (let [input (.. e -target -value)]
                         (swap! t2 assoc :value input)))}]
-       [:button "Book"]])))
+       [:button
+        {:disabled (cond
+                     (nil? (validate-date (:value @t1))) true
+                     (and @(:enabled @t2) (nil? (validate-date (:value @t2)))) true
+                     (and @(:enabled @t2) (> (compare (:value @t1) (:value @t2)) 0)) true
+                     :else false)}
+        "Book"]])))
