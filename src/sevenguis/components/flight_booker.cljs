@@ -1,6 +1,22 @@
 (ns sevenguis.components.flight-booker
   (:require [reagent.core :as r]
-            [reagent.ratom :as ratom]))
+            [reagent.ratom :as ratom]
+            [clojure.string :as string]))
+
+(defn zeropad
+  "not an actual full-fledged zeropad helper
+   is only good for padding string of length 1 to 2"
+  [string]
+  (if (= (count string) 1)
+    (str "0" string)
+    string))
+
+(def today-str (let [today (js/Date.)]
+                 (string/join
+                  "-"
+                  [(.getFullYear today)
+                   (zeropad (str (+ (.getMonth today) 1)))
+                   (zeropad (str (.getDate today)))])))
 
 (def date-regex #"\d{4}-\d{2}-(\d{2})")
 
@@ -15,8 +31,8 @@
 (defn flight-booker
   []
   (let [c (r/atom :one-way)
-        t1 (r/atom {:value "2021-01-08"})
-        t2 (r/atom {:value "2021-01-08"
+        t1 (r/atom {:value today-str})
+        t2 (r/atom {:value today-str
                     :enabled (ratom/reaction (= :return @c))})]
     (fn
       []
