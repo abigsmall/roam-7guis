@@ -64,7 +64,25 @@
        [:button
         {:disabled (cond
                      (nil? (validate-date (:value @t1))) true
-                     (and @(:enabled @t2) (nil? (validate-date (:value @t2)))) true
-                     (and @(:enabled @t2) (> (compare (:value @t1) (:value @t2)) 0)) true
-                     :else false)}
+                     (and
+                      @(:enabled @t2)
+                      (nil? (validate-date (:value @t2)))) true
+                     (and
+                      @(:enabled @t2)
+                      (> (compare (:value @t1) (:value @t2)) 0)) true
+                     :else false)
+         :on-click #(js/alert
+                     (string/join
+                      " "
+                      ["You have booked a"
+                       (condp = @c
+                         :one-way (string/join
+                                   " "
+                                   ["one-way flight for" (:value @t1)])
+                         :return (string/join
+                                  " "
+                                  ["return flight from"
+                                   (:value @t1)
+                                   "to"
+                                   (:value @t2)]))]))}
         "Book"]])))
